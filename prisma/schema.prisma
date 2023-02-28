@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+//Modelagem de banco || criar um migration: yarn prisma migrate dev
+
+//TABELA DE USUÁRIOS
+model User{
+  id String @id @default(uuid()) //id 
+  name String
+  email String
+  password String
+  created_at DateTime? @default(now()) //pegando a data atual do banco
+  updated_at DateTime? @default(now()) //pegando a data atual do banco
+
+//Criando tabela, definindo o nome no banco de dados
+@@map("users")
+
+}
+
+//TABELA DE CATEGORIA
+model Category{
+  id String @id @default(uuid()) //id 
+  name String
+  create_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  @@map("categories")
+
+  //dentro da categoria poderemos ter vários produtos
+  //fazemos a relação de product com category
+  products Product[]
+
+}
+
+//TABELA PRODUTOS
+model Product{
+  id String @id @default(uuid()) //id 
+  name String
+  price String
+  description String
+  banner String
+  create_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  //relacionando product com category
+  category Category @relation(fields: [category_id], references:[id])
+
+  @@map("products")
+
+  //id categoria do produto
+  category_id String
+  //relacionando com item
+  items Item[]
+}
+
+//TABELA PEDIDO
+model Order{
+  id String @id @default(uuid()) //id 
+  table Int
+  status Boolean @default(false) //o pedido começara como falso, ate ser confirmado para true
+  draft Boolean @default(true) //o rascunho do pedido começara como true e falso quando for confirmado 
+  name String? //aceita um nome nenhum nome
+  create_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  @@map("orders")
+  items Item[] //um pedido poderá ter vários itens
+  }
+
+//TABELA DE ITENS DO PEDIDO
+model Item{
+    id String @id @default(uuid()) //id 
+    amount Int
+
+    create_at DateTime? @default(now())
+    updated_at DateTime? @default(now())
+
+    order Order @relation(fields: [order_id], references: [id])
+
+    //um produto pode esta dentro de varios item
+    product Product @relation(fields: [product_id], references: [id])
+   
+    @@map("items")
+
+    order_id String
+    product_id String
+} 
