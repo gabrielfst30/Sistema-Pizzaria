@@ -20,6 +20,9 @@ import { RemoveOrderController } from "./controllers/order/RemoveOrderController
 import { AddItemController } from "./controllers/order/AddItemController";
 import { RemoveItemController } from "./controllers/order/RemoveItemController";
 import { SendOrderController } from "./controllers/order/SendOrderController";
+import { ListOrdersController } from "./controllers/order/ListOrdersController";
+import { DetailOrderController } from "./controllers/order/DetailOrderController";
+import { FinishOrderController } from "./controllers/order/FinishOrderController";
 
 
 //Importando o Middleware de verificação de autenticação por token
@@ -64,7 +67,10 @@ router.get('/category/product', isAuthenticated, new ListByCategoryController().
 
 
 //------------------------- ROTAS ORDER-------------------------
+
+//criando uma order
 router.post('/order', isAuthenticated, new CreateOrderController().handle)
+//deletando uma order
 router.delete('/order', isAuthenticated, new RemoveOrderController().handle)
 //cadastrar um novo item order
 router.post('/order/add', isAuthenticated, new AddItemController().handle)
@@ -72,7 +78,12 @@ router.post('/order/add', isAuthenticated, new AddItemController().handle)
 router.delete('/order/remove', isAuthenticated, new RemoveItemController().handle)
 //atualizado o draft do pedido para false
 router.put('/order/send', isAuthenticated, new SendOrderController().handle)
-
+//listando os ultimos pedidos
+router.get('/orders', isAuthenticated, new ListOrdersController().handle)
+//detalhes de um pedido
+router.get('/orders/detail', isAuthenticated, new DetailOrderController().handle)
+//finalizando pedido (status para true)
+router.put('/order/finish', isAuthenticated, new FinishOrderController().handle)
 
 //-----Exportando a router para ser usado em outro arquivo------
 export { router };
