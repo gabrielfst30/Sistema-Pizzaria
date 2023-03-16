@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button"
 
 //importanto o contexto
 import { AuthContext } from "@/contexts/AuthContext"
+import { ToastContainer, toast } from 'react-toastify';
 
 //importando link
 import Link from "next/link";
@@ -33,7 +34,7 @@ export default function Home() {
 
     //verificar se o usuário de fato informou algum dado
     if(email === '' || password === ''){
-      alert("Preencha os dados")
+      toast.error("Preencha os campos!")
       return;
     }
 
