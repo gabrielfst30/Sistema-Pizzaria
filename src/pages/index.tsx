@@ -15,6 +15,10 @@ import { ToastContainer, toast } from 'react-toastify';
 //importando link
 import Link from "next/link";
 
+//server side import
+import { GetServerSideProps } from "next"
+import { canSSRGuest } from "@/utils/canSSRGuest"
+
 export default function Home() {
   //pegando a propriedade de login
   const { signIn } = useContext(AuthContext)
@@ -96,3 +100,11 @@ export default function Home() {
 
   )
 }
+
+
+export const getServerSideProps = canSSRGuest(async (ctx) => {
+
+  return {
+    props: {}
+  }
+})
