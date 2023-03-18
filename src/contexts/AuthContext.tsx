@@ -1,5 +1,5 @@
 import { Sign } from "crypto";
-import { createContext, ReactNode, use, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 
 //importanto o destruidor de cookies
 import { destroyCookie, setCookie, parseCookies } from "nookies";
@@ -67,6 +67,28 @@ export function AuthProvider({ children }: AuthProviderProps){
     //se o usário não estiver logado o isAuthenticated será falso, se tiver logado será verdadeiro
     const isAuthenticated = !!user; //convertendo a variável do user como booleano com as interrogações
 
+
+    //CICLO DE VIDA COM USE-EFFECT PARA GARANTIR SEGURANÇA DE SE O USUÁRIO ESTIVER REALMENTE LOGADO
+    useEffect(() => {
+        
+        //Tentar pegar algo no cookie que é nosso token
+        const { '@nextauth.token': token } = parseCookies();
+
+        if(token){
+            api.get('/me').then(response => {
+                const { id, name, email } = response.data; //a resposta da requisição é sempre no response.data
+                setUser({
+                    id,
+                    name,
+                    email
+                })
+            })
+            .catch(() => {
+                //SE DEU ERRO, DESLOGAMOS O USUÁRIO
+                signOut()
+            })
+        }
+    },[])
 
     //recebendo os dados de LOGIN
     async function signIn({ email, password }: SignInProps){
