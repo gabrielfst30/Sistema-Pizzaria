@@ -9,13 +9,13 @@ class DetailUserService{
                 id: user_id
             },
             select:{
-                id:true,
-                name:true,
-                email:true
+                id: true,
+                name: true,
+                email: true
             }
         })
 
-        return { user_id }
+        return { user }
 
     }
 }
