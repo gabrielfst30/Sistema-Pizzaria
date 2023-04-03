@@ -12,7 +12,6 @@ import { ModalOrder } from '@/components/ModalOrder';
 
 //react-modal
 import Modal from 'react-modal';
-import { type } from 'os';
 
 type OrderProps = {
     id: string;
@@ -67,8 +66,35 @@ export default function Dashboard({ orders }: HomeProps){
             }
         })
 
+        console.log(response)
+
         setModalItem(response.data)
         setModalVisible(true)
+    }
+
+    async function handleFinishItem(id: string){
+        const apiClient = setupAPIClient();
+        //atualizando o id 
+        await apiClient.put('/order/finish',{
+           order_id: id,
+        })
+
+        //buscando todas as orders
+        const response = await apiClient.get('/orders');
+        //setando
+        setOrderList(response.data);
+
+        setModalVisible(false);
+    }
+
+    async function handleRefreshOrder() {
+        const apiClient = setupAPIClient();
+
+        //buscando todas as orders
+        const response = await apiClient.get('/orders');
+        setOrderList(response.data);
+        
+        console.log("retornando")
     }
 
     Modal.setAppElement('#__next');
@@ -84,12 +110,19 @@ export default function Dashboard({ orders }: HomeProps){
         <main className={styles.container}>
             <div className={styles.containerHeader}>
                 <h1>Últimos pedidos</h1>
-                <button>
+                <button className={styles.buttonUpdate} onClick={handleRefreshOrder}>
                     <FiRefreshCcw size={25} color="#3fffa3"/>
                 </button>
             </div>
 
             <article className={styles.listOrders}>
+
+                {/*SE A LISTA ESTIVER VAZIA, APARECERÁ A SEGUINTE MSG*/}
+                {orderList.length === 0 &&(
+                    <span className={styles.emptyList}>
+                        <h2>Nenhum pedido encontrado...</h2>
+                    </span>
+                )}
                 
                 {orderList.map(item => (
                     <section key={item.id} className={styles.orderItem}>
@@ -105,9 +138,10 @@ export default function Dashboard({ orders }: HomeProps){
 
         { modalVisible && (
             <ModalOrder
-            isOpen={modalVisible}
-            onRequestClose={handleCloseModal}
-            order={modalItem}
+            isOpen={ modalVisible }
+            onRequestClose={ handleCloseModal }
+            order={ modalItem }
+            handleFinishOrder={ handleFinishItem }
             
             />
         )}
