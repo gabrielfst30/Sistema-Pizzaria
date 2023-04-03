@@ -9,11 +9,12 @@ interface ModalOrderProps{
     isOpen: boolean; // modal aberto
     onRequestClose: () => void; //fechar modal
     order: OrderItemProps[]; //trazendo tipagem 
+    handleFinishOrder: (id: string) => void; //
 }
 
 
 
-export function ModalOrder({isOpen, onRequestClose, order}:ModalOrderProps){
+export function ModalOrder({isOpen, onRequestClose, order, handleFinishOrder}: ModalOrderProps){
     
     const customStyles ={
         content : {
@@ -26,7 +27,7 @@ export function ModalOrder({isOpen, onRequestClose, order}:ModalOrderProps){
             borderRadius          : '10px',
             transform             : 'translate(-50%, -50%)'
         }
-    }
+    };
     
     return(
         <Modal
@@ -45,20 +46,27 @@ export function ModalOrder({isOpen, onRequestClose, order}:ModalOrderProps){
             <FiX size={45} color='#f34748'/>
         </button>
 
-        <div>
+        <div className={styles.container}>
 
-            <h2>Detalhes do pedido</h2>
+            <h2>Detalhes do  pedido</h2>
             <span className={styles.table}>
-                Mesa: <strong>{order[0].order.table}</strong>
+                Mesa <strong>{order[0].order.table}</strong>
             </span>
 
             {/*PERCORRENDO A ORDER COM MAP PARA MOSTRAR TODOS OS ITENS NO MODAL*/}
             {order.map( item => (
                 <section key={item.id} className={styles.containerItem}>
                     <span>{item.amount} - <strong>{item.product.name}</strong></span>
-                    <span className={styles.description}>{item.product.description}</span>
+                    <span className={styles.description}>
+                        {item.product.description}
+                    </span>
                 </section>
             ))}
+
+            <button className={styles.buttonOrder} onClick={ () => { handleFinishOrder(order[0].order_id) } }>
+                Concluir Pedido
+                
+            </button>
 
 
         </div>
@@ -66,3 +74,4 @@ export function ModalOrder({isOpen, onRequestClose, order}:ModalOrderProps){
         </Modal>
     )
 }
+
