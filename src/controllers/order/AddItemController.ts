@@ -5,9 +5,9 @@ class AddItemController{
     async handle(req: Request, res: Response){
         const {order_id, product_id, amount} = req.body //pedindo a requisição pelo body 
 
-        const AddItem = new AddItemService();
+        const addItem = new AddItemService();
 
-        const order = await AddItem.execute({
+        const order = await addItem.execute({
             order_id, 
             product_id, 
             amount
